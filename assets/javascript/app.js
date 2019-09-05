@@ -71,26 +71,33 @@ database.ref().on("child_added", function (childSnapshot) {
   console.log(time);
   console.log(frequency);
 
-  // Prettify the Train start
-  var trainArrival = moment.unix(time).format("HH:mm");
+  var firstTimeConverted = moment(time, "HH:mm").subtract(1, "years");
 
-  // Calculate the months worked using hardcore math
-  // To calculate the months worked
-  var trainFrequency = moment().diff(moment(time, "X"), "minutes");
-  console.log(trainFrequency);
+        var currentTime = moment();
+        console.log(moment(currentTime).format("HH:mm"));
 
+        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        console.log(diffTime);
 
+        var tRemainder = diffTime % frequency;
+        console.log(tRemainder);
 
-  // Create the new row
-  var newRow = $("<tr>").append(
-    $("<td>").text(trainName),
-    $("<td>").text(destination),
-    $("<td>").text(trainArrival),
-    $("<td>").text(trainFrequency),
-    $("<td>").text(frequency),
-  );
+        var tMinutesTillTrain = frequency - tRemainder;
+        console.log(tMinutesTillTrain);
 
-  // Append the new row to the table
-  $("#train-table > tbody").append(newRow);
-});
+        var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+        console.log(moment(nextTrain).format("HH:mm"));
+
+        var tRow = $("<tr>").append(
+            $("<td>").text(trainName),
+            $("<td>").text(destination),
+            $("<td>").text(frequency),
+            $("<td>").text(moment(nextTrain).format("HH:mm A")),
+            $("<td>").text(tMinutesTillTrain),
+        );
+
+        $("tbody").append(tRow);
+
+    })
+
 
